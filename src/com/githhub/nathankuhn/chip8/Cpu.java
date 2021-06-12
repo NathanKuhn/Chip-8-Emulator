@@ -59,11 +59,11 @@ public class Cpu {
                          byte2 = memory.getMemoryValue(stackAddress + 1);
                          memory.setMemoryValue(stackAddress, (byte)0);
                          memory.setMemoryValue(stackAddress + 1, (byte)1);
-                         instructionAddress = (byte1 & 0xff) * 0x100 + (byte2 & 0xff); // TODO decently sure this is broken
+                         instructionAddress = ((byte1 & 0xff) << 8) | (byte2 & 0xff);
                          break;
                      default:
-                         byte1 = (byte) (instructionAddress - instructionAddress % 0x100);
-                         byte2 = (byte) (instructionAddress % 0x100);
+                         byte1 = (byte) (instructionAddress >> 8);
+                         byte2 = (byte) (instructionAddress & 0xff);
                          memory.setMemoryValue(stackAddress, byte1);
                          memory.setMemoryValue(stackAddress + 1, byte2);
                          stackAddress += 2;
@@ -78,8 +78,8 @@ public class Cpu {
                 break;
 
             case ('2'):
-                byte1 = (byte) (instructionAddress - instructionAddress % 0x100);
-                byte2 = (byte) (instructionAddress % 0x100);
+                byte1 = (byte) (instructionAddress >> 8);
+                byte2 = (byte) (instructionAddress & 0xff);
                 memory.setMemoryValue(stackAddress, byte1);
                 memory.setMemoryValue(stackAddress + 1, byte2);
                 stackAddress += 2;
