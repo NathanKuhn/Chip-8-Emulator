@@ -28,10 +28,7 @@ public class Cpu {
             handleInstruction(instruction);
             steps++;
         }
-
-        System.out.println(registers.getDataRegisterValue(10));
-        System.out.println(registers.getDataRegisterValue(11));
-        System.out.println(registers.getDataRegisterValue(12));
+        registers.print();
     }
 
     private String fetchInstruction() {
@@ -47,15 +44,92 @@ public class Cpu {
 
     private void handleInstruction(String instruction) {
 
+        byte byte1;
+        byte byte2;
+
         switch (instruction.charAt(0)) {
+            case ('0'):
+                 switch( instruction.substring(1)) {
+                     case ("0e0"):
+                         break; // TODO clear the screen
+                     case ("0ee"):
+                         stackAddress -= 2;
+                         assert (stackAddress > INITIAL_STACK_ADDRESS) : "No routine to return from";
+                         byte1 = memory.getMemoryValue(stackAddress);
+                         byte2 = memory.getMemoryValue(stackAddress + 1);
+                         memory.setMemoryValue(stackAddress, (byte)0);
+                         memory.setMemoryValue(stackAddress + 1, (byte)1);
+                         instructionAddress = (byte1 & 0xff) * 0x100 + (byte2 & 0xff); // TODO decently sure this is broken
+                         break;
+                     default:
+                         byte1 = (byte) (instructionAddress - instructionAddress % 0x100);
+                         byte2 = (byte) (instructionAddress % 0x100);
+                         memory.setMemoryValue(stackAddress, byte1);
+                         memory.setMemoryValue(stackAddress + 1, byte2);
+                         stackAddress += 2;
+                         assert (stackAddress < Memory.MEMORY_SIZE);
+                         instructionAddress = Integer.parseInt(instruction.substring(1, 3), 16);
+                         break;
+                 }
+                break;
+
+            case ('1'):
+                instructionAddress = Integer.parseInt(instruction.substring(1), 16);
+                break;
+
+            case ('2'):
+                byte1 = (byte) (instructionAddress - instructionAddress % 0x100);
+                byte2 = (byte) (instructionAddress % 0x100);
+                memory.setMemoryValue(stackAddress, byte1);
+                memory.setMemoryValue(stackAddress + 1, byte2);
+                stackAddress += 2;
+                assert (stackAddress < Memory.MEMORY_SIZE);
+                instructionAddress = Integer.parseInt(instruction.substring(1, 4), 16);
+                break;
+
+            case ('3'):
+                break;
+
+            case ('4'):
+                break;
+
+            case ('5'):
+                break;
+
             case ('6'):
                 int register = Integer.parseInt(instruction.substring(1, 2), 16);
                 int value = Integer.parseInt(instruction.substring(2, 4), 16);
                 registers.setDataRegisterValue(register, (byte) value);
                 break;
-            case ('b'):
-                instructionAddress = Integer.parseInt(instruction.substring(1), 16);
+
+            case ('7'):
                 break;
+
+            case ('8'):
+                break;
+
+            case ('9'):
+                break;
+
+            case ('a'):
+                break;
+
+            case ('b'):
+                instructionAddress = Integer.parseInt(instruction.substring(1), 16) + registers.getDataRegisterValue(0);
+                break;
+
+            case ('c'):
+                break;
+
+            case ('d'):
+                break;
+
+            case ('e'):
+                break;
+
+            case ('f'):
+                break;
+
             default:
                 break;
         }

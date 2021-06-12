@@ -12,6 +12,12 @@ public class Registers {
         addressRegister = 0;
     }
 
+    public void print() {
+        for (int i = 0; i < dataRegisters.length; i++) {
+            System.out.print(dataRegisters[i] + (i == dataRegisters.length - 1 ? "\n" : ", "));
+        }
+    }
+
     public byte getDataRegisterValue(int register) {
         return dataRegisters[register];
     }
