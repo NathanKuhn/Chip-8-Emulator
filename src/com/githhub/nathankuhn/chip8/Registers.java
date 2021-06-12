@@ -2,7 +2,7 @@ package com.githhub.nathankuhn.chip8;
 
 public class Registers {
 
-    private final int DATA_REGISTERS = 16;
+    private static final int DATA_REGISTERS = 16;
 
     private byte[] dataRegisters;
     private int addressRegister;
@@ -23,6 +23,7 @@ public class Registers {
         dataRegisters[register] = value;
     }
     public void setAddressRegister(int value) {
+        assert (value < Memory.MEMORY_SIZE) : "Cannot set address register to a non-existent address";
         addressRegister = value;
     }
 

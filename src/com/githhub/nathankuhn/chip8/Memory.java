@@ -2,12 +2,16 @@ package com.githhub.nathankuhn.chip8;
 
 public class Memory {
 
-    public final int MEMORY_SIZE = 4096;
+    public static final int MEMORY_SIZE = 4096;
 
     private byte[] memoryValues;
 
     public Memory() {
         memoryValues = new byte[MEMORY_SIZE];
+    }
+
+    public void loadROM(int initialAddress, byte[] data) {
+        System.arraycopy(data, 0, memoryValues, initialAddress, data.length);
     }
 
     public byte getMemoryValue(int address) {
