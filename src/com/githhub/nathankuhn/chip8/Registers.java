@@ -14,7 +14,21 @@ public class Registers {
 
     public void print() {
         for (int i = 0; i < dataRegisters.length; i++) {
-            System.out.print(dataRegisters[i] + (i == dataRegisters.length - 1 ? "\n" : ", "));
+            System.out.print("+---" + (i == dataRegisters.length - 1 ? "+\n" : ""));
+        }
+        System.out.print("| ");
+        for (int i = 0; i < dataRegisters.length; i++) {
+            System.out.print(Integer.toHexString(i) + " |" + (i == dataRegisters.length - 1 ? "\n" : " "));
+        }
+        for (int i = 0; i < dataRegisters.length; i++) {
+            System.out.print("+---" + (i == dataRegisters.length - 1 ? "+\n" : ""));
+        }
+        System.out.print("| ");
+        for (int i = 0; i < dataRegisters.length; i++) {
+            System.out.print(Integer.toHexString(dataRegisters[i]) + " |" + (i == dataRegisters.length - 1 ? "\n" : " "));
+        }
+        for (int i = 0; i < dataRegisters.length; i++) {
+            System.out.print("+---" + (i == dataRegisters.length - 1 ? "+\n" : ""));
         }
     }
 

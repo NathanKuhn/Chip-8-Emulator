@@ -47,6 +47,8 @@ public class Cpu {
         byte byte1;
         byte byte2;
 
+        int register;
+
         switch (instruction.charAt(0)) {
             case ('0'):
                  switch( instruction.substring(1)) {
@@ -88,6 +90,10 @@ public class Cpu {
                 break;
 
             case ('3'):
+                register = Integer.parseInt(instruction.substring(1, 2), 16);
+                byte1 = Byte.parseByte(instruction.substring(2, 4), 16);
+                if (registers.getDataRegisterValue(register) == byte1)
+                    instructionAddress += 2;
                 break;
 
             case ('4'):
@@ -97,7 +103,7 @@ public class Cpu {
                 break;
 
             case ('6'):
-                int register = Integer.parseInt(instruction.substring(1, 2), 16);
+                register = Integer.parseInt(instruction.substring(1, 2), 16);
                 int value = Integer.parseInt(instruction.substring(2, 4), 16);
                 registers.setDataRegisterValue(register, (byte) value);
                 break;

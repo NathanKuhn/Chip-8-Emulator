@@ -10,8 +10,8 @@ public class Memory {
         memoryValues = new byte[MEMORY_SIZE];
     }
 
-    public void loadROM(int initialAddress, byte[] data) {
-        System.arraycopy(data, 0, memoryValues, initialAddress, data.length);
+    public void loadROM(int initialAddress, ROM rom) {
+        System.arraycopy(rom.content, 0, memoryValues, initialAddress, rom.length);
     }
 
     public byte getMemoryValue(int address) {
