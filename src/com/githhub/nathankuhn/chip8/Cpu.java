@@ -1,5 +1,7 @@
 package com.githhub.nathankuhn.chip8;
 
+import java.util.Random;
+
 public class Cpu {
 
     private static final int MAXIMUM_STEPS = 100;
@@ -47,7 +49,10 @@ public class Cpu {
         byte byte1;
         byte byte2;
 
+        int value;
         int register;
+        int register1;
+        int register2;
 
         switch (instruction.charAt(0)) {
             case ('0'):
@@ -97,27 +102,101 @@ public class Cpu {
                 break;
 
             case ('4'):
+                register = Integer.parseInt(instruction.substring(1, 2), 16);
+                byte1 = Byte.parseByte(instruction.substring(2, 4), 16);
+                if (registers.getDataRegisterValue(register) != byte1)
+                    instructionAddress += 2;
                 break;
 
             case ('5'):
+                register1 = Integer.parseInt(instruction.substring(1, 2), 16);
+                register2 = Integer.parseInt(instruction.substring(2, 3), 16);
+                if (registers.getDataRegisterValue(register1) == registers.getDataRegisterValue(register2))
+                    instructionAddress += 2;
                 break;
 
             case ('6'):
                 register = Integer.parseInt(instruction.substring(1, 2), 16);
-                int value = Integer.parseInt(instruction.substring(2, 4), 16);
+                value = Integer.parseInt(instruction.substring(2, 4), 16);
                 registers.setDataRegisterValue(register, (byte) value);
                 break;
 
             case ('7'):
+                register = Integer.parseInt(instruction.substring(1, 2), 16);
+                value = Integer.parseInt(instruction.substring(2, 4), 16);
+                registers.setDataRegisterValue(register, (byte) (registers.getDataRegisterValue(register) + value));
                 break;
 
             case ('8'):
+
+                register1 = Integer.parseInt(instruction.substring(1, 2), 16);
+                register2 = Integer.parseInt(instruction.substring(2, 3), 16);
+
+                int registerValue1 = registers.getDataRegisterValue(register1) & 0xff;
+                int registerValue2 = registers.getDataRegisterValue(register2) & 0xff;
+
+                switch (instruction.substring(3, 4)){
+                    case ("0"):
+                        registers.setDataRegisterValue(register1, (byte) registerValue2);
+                        break;
+
+                    case("1"):
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 | registerValue2));
+                        break;
+
+                    case("2"):
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 & registerValue2));
+                        break;
+
+                    case("3"):
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 ^ registerValue2));
+                        break;
+
+                    case("4"):
+                        value = registerValue1 + registerValue2;
+                        if (value > 255)
+                            registers.setDataRegisterValue(0xf, (byte) 1);
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 + registerValue2));
+                        break;
+
+                    case("5"):
+                        value = registerValue1 - registerValue2;
+                        if (value < 0)
+                            registers.setDataRegisterValue(0xf, (byte) 1);
+                        registers.setDataRegisterValue(register1, (byte) value);
+                        break;
+
+                    case("6"):
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 >> 1));
+                        registers.setDataRegisterValue(0xf, (byte) (registerValue1 & 1));
+                        break;
+
+                    case("7"):
+                        value = registerValue2 - registerValue1;
+                        if (value < 0)
+                            registers.setDataRegisterValue(0xf, (byte) 1);
+                        registers.setDataRegisterValue(register1, (byte) value);
+                        break;
+
+                    case("E"):
+                        registers.setDataRegisterValue(register1, (byte) (registerValue1 << 1));
+                        registers.setDataRegisterValue(0xf, (byte) (registerValue1 & 0x80));
+                        break;
+                    default:
+                        System.out.println("Unhandled arithmetic");
+                        break;
+                }
                 break;
 
             case ('9'):
+                register1 = Integer.parseInt(instruction.substring(1, 2), 16);
+                register2 = Integer.parseInt(instruction.substring(2, 3), 16);
+                if (registers.getDataRegisterValue(register1) != registers.getDataRegisterValue(register2))
+                    instructionAddress += 2;
                 break;
 
             case ('a'):
+                registers.setAddressRegister(Integer.parseInt(instruction.substring(1, 4), 16));
                 break;
 
             case ('b'):
@@ -125,6 +204,9 @@ public class Cpu {
                 break;
 
             case ('c'):
+                Random random = new Random();
+                int randomNumber = random.nextInt(256) & Integer.parseInt(instruction.substring(2, 4), 16);
+                registers.setDataRegisterValue(Integer.parseInt(instruction.substring(1, 2),16), (byte) randomNumber);
                 break;
 
             case ('d'):
